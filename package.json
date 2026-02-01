@@ -1,0 +1,17 @@
+{
+  "name": "applrec",
+  "version": "1.0.0",
+  "description": "Personal application Tracker",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "hono": "^4.11.7"
+  }
+}
