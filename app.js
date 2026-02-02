@@ -7,14 +7,15 @@ const app = new Hono();
 
 //handle cors
 app.use("/api/*", cors({
-  origin: "https://applrec-client.pages.dev/",
+  origin: "https://applrec-client.pages.dev",
   allowMethods: ["GET", "POST", "PUT", "DELETE"],
 }))
 
 //only let the frontend make request
 app.use("/api/*", async function (c, next) {
   const origin = c.req.header("Origin");
-  if (origin !== "https://applrec-client.pages.dev/") {
+  console.log(origin);
+  if (origin !== "https://applrec-client.pages.dev") {
     return c.json({
       message: "You are not allowed !!"
     }, 403);
