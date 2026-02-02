@@ -22,9 +22,9 @@ applrec.get("/get-appl", async function (c) {
 });
 
 applrec.get("/search", async function (c) {
-    try{
+    try {
         const param = c.req.query('q');
-        if(!param){
+        if (!param) {
             return c.json({
                 message: "No search Param provided"
             }, 400);
@@ -33,10 +33,10 @@ applrec.get("/search", async function (c) {
         const sql = neon(c.env.REMOTE_DB_URL);
         let data = await sql.query(`
             SELECT * FROM applrec
-            WHERE companyname ILIKE '%${ param }%'
+            WHERE companyname ILIKE '%${param}%'
         `);
 
-        if(data.length === 0){
+        if (data.length === 0) {
             data = "No Matching fields";
         }
 
@@ -45,7 +45,7 @@ applrec.get("/search", async function (c) {
             data: data
         }, 200);
     }
-    catch(error){
+    catch (error) {
         console.log(error);
         return c.json({
             message: "Failed to Search"
@@ -55,12 +55,12 @@ applrec.get("/search", async function (c) {
 
 applrec.post("/apply", async function (c) {
     try {
-        const { appldate, companyname, position, url } = await c.req.json();
+        const { appldate, companyname, position, url, status } = await c.req.json();
         const sql = neon(c.env.REMOTE_DB_URL);
 
         const data = await sql.query(`
         INSERT INTO applrec (appldate, companyname, position, url)
-        VALUES('${appldate}', '${companyname}', '${position}', '${url}')
+        VALUES('${appldate}', '${companyname}', '${position}', '${url}', '${status}')
         `);
 
         return c.json({
