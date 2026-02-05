@@ -6,16 +6,19 @@ import applrec from "./routes/applrec.js";
 const app = new Hono();
 
 //handle cors
-app.use("/api/*", cors({
-  origin: "https://applrec-client.pages.dev",
-  allowMethods: ["GET", "POST", "PUT", "DELETE"],
-}))
+app.use("/api/*", async function (c, next) {
+  const corsMiddleware = cors({
+    origin: c.env.ORIGIN,
+    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+  });
+
+  return corsMiddleware(c, next);
+});
 
 //only let the frontend make request
 app.use("/api/*", async function (c, next) {
   const origin = c.req.header("Origin");
-  console.log(origin);
-  if (origin !== "https://applrec-client.pages.dev") {
+  if (origin !== c.env.ORIGIN) {
     return c.json({
       message: "You are not allowed !!"
     }, 403);
