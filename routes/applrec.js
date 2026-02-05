@@ -6,7 +6,7 @@ const applrec = new Hono();
 applrec.get("/get-appl", async function (c) {
     try {
         const sql = neon(c.env.REMOTE_DB_URL);
-        const data = await sql.query("SELECT * FROM applrec");
+        const data = await sql.query("SELECT * FROM applrec ORDER BY appl_id DESC");
 
         return c.json({
             message: "Data Fetched",
