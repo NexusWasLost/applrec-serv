@@ -6,7 +6,8 @@ const applrec = new Hono();
 applrec.get("/get-appl", async function (c) {
     try {
         const sql = neon(c.env.REMOTE_DB_URL);
-        const data = await sql.query("SELECT * FROM applrec ORDER BY appl_id DESC");
+        const data = await sql.query(`SELECT * FROM applrec
+        ORDER BY appl_id DESC LIMIT 50`);
 
         return c.json({
             message: "Data Fetched",
@@ -42,6 +43,41 @@ applrec.get("/search", async function (c) {
 
         return c.json({
             message: "Data Fetched",
+            data: data
+        }, 200);
+    }
+    catch (error) {
+        console.log(error);
+        return c.json({
+            message: "Failed to Search"
+        }, 500);
+    }
+});
+
+applrec.get("/search-by-date", async function (c) {
+    try {
+        const date = c.req.query('d');
+        if (!date) {
+            return c.json({
+                message: "No search Date provided"
+            }, 400);
+        }
+
+        console.log(date);
+
+        const sql = neon(c.env.REMOTE_DB_URL);
+        let data = await sql.query(`
+            SELECT * FROM applrec
+            WHERE appldate = '${ date }'
+            ORDER BY appldate DESC
+        `);
+
+        if (data.length === 0) {
+            data = "No Matching fields";
+        }
+
+        return c.json({
+            message: "Data Recieved",
             data: data
         }, 200);
     }
