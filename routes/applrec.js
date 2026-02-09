@@ -91,12 +91,12 @@ applrec.get("/search-by-date", async function (c) {
 
 applrec.post("/apply", async function (c) {
     try {
-        const { appldate, companyname, position, url, status } = await c.req.json();
+        const { appldate, companyname, position, url, status, notes } = await c.req.json();
         const sql = neon(c.env.REMOTE_DB_URL);
 
         const data = await sql.query(`
-        INSERT INTO applrec (appldate, companyname, position, url, status)
-        VALUES('${appldate}', '${companyname}', '${position}', '${url}', '${status}')
+        INSERT INTO applrec (appldate, companyname, position, url, status, notes)
+        VALUES('${ appldate }', '${ companyname }', '${ position }', '${ url }', '${ status }', '${ notes }')
         `);
 
         return c.json({
