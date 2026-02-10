@@ -67,7 +67,7 @@ applrec.get("/search-by-date", async function (c) {
         let data = await sql.query(`
             SELECT * FROM applrec
             WHERE appldate = '${ date }'
-            ORDER BY appldate DESC
+            ORDER BY appl_id DESC LIMIT 20
         `);
 
         if (data.length === 0) {
@@ -159,7 +159,7 @@ applrec.post("/apply", async function (c) {
 
         const data = await sql.query(`
         INSERT INTO applrec (appldate, companyname, position, url, status, notes)
-        VALUES('${appldate}', '${companyname}', '${position}', '${url}', '${status}', '${ notes }')
+        VALUES('${ appldate }', '${ companyname }', '${ position }', '${ url }', '${ status }', '${ notes }')
         `);
 
         return c.json({
