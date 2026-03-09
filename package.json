@@ -4,7 +4,8 @@
   "description": "Personal application Tracker",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "wrangler dev"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +14,8 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "hono": "^4.11.7"
+  },
+  "devDependencies": {
+    "wrangler": "^4.71.0"
   }
 }

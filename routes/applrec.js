@@ -34,8 +34,9 @@ applrec.get("/search", async function (c) {
         const sql = neon(c.env.REMOTE_DB_URL);
         let data = await sql.query(`
             SELECT * FROM applrec
-            WHERE companyname ILIKE '%${param}%'
-        `);
+            WHERE companyname ILIKE '%' || $1 || '%'`,
+            [param]
+        );
 
         if (data.length === 0) {
             data = "No Matching fields";
@@ -66,9 +67,10 @@ applrec.get("/search-by-date", async function (c) {
         const sql = neon(c.env.REMOTE_DB_URL);
         let data = await sql.query(`
             SELECT * FROM applrec
-            WHERE appldate = '${date}'
-            ORDER BY appldate DESC
-        `);
+            WHERE appldate = $1
+            ORDER BY appldate DESC`,
+            [date]
+        );
 
         if (data.length === 0) {
             data = "No Matching fields";
@@ -101,8 +103,9 @@ applrec.get("/search-by-id", async function (c) {
             SELECT
             TO_CHAR(appldate, 'YYYY-MM-DD') AS appldate,
             companyname, position, url, status, notes
-            FROM applrec WHERE appl_id = ${id}
-        `);
+            FROM applrec WHERE appl_id = $1`,
+            [id]
+        );
 
         if (data.length === 0) {
             data = "No Matching fields";
@@ -134,11 +137,12 @@ applrec.put("/update-appl", async function (c) {
         const data = await sql.query(`
         UPDATE applrec
         SET
-        appldate = '${appldate}', companyname = '${companyname}',
-        position = '${position}', url = '${url}',
-        status = '${status}', notes = '${notes}'
-        WHERE appl_id = ${id}
-        `);
+        appldate = $1, companyname = $2,
+        position = $3, url = $4,
+        status = $5, notes = $6
+        WHERE appl_id = $7`,
+            [appldate, companyname, position, url, status, notes, id]
+        );
 
         return c.json({
             message: "Update Data recieved successfully"
@@ -158,9 +162,10 @@ applrec.post("/apply", async function (c) {
         const sql = neon(c.env.REMOTE_DB_URL);
 
         const data = await sql.query(`
-        INSERT INTO applrec (appldate, companyname, position, url, status, notes)
-        VALUES('${appldate}', '${companyname}', '${position}', '${url}', '${status}', '${notes}')
-        `);
+            INSERT INTO applrec (appldate, companyname, position, url, status, notes)
+            VALUES($1, $2, $3, $4, $5, $6)`,
+            [appldate, companyname, position, url, status, notes]
+        );
 
         return c.json({
             message: "Data inserted successfully"
@@ -175,7 +180,7 @@ applrec.post("/apply", async function (c) {
 
 });
 
-applrec.delete("del-appl", async function (c) {
+applrec.delete("/del-appl", async function (c) {
     try {
         const { id } = await c.req.json();
         if (!id) {
@@ -187,8 +192,9 @@ applrec.delete("del-appl", async function (c) {
         const sql = neon(c.env.REMOTE_DB_URL);
         const data = await sql.query(`
         DELETE FROM applrec
-        WHERE appl_id = ${ id }
-        `);
+        WHERE appl_id = $1`,
+            [id]
+        );
 
         return c.json({
             message: "Application Deleted Successfully"
